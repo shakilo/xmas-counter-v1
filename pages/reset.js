@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link'
 
 const reset = () => {
   // Another way to call the clearTimer() to start
@@ -25,7 +26,7 @@ const reset = () => {
   return (
     <div className="App">
       <h2>Admin</h2>
-      <a href="/">Home</a>
+      <Link href="/">Home</Link>
       <button onClick={onClickReset}>Reset</button>
     </div>
 
