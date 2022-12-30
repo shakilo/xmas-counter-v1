@@ -8,11 +8,17 @@ const reset = () => {
   // button first we create function to be called
   // by the button
   const onClickReset = () => {
-    fetch('/api/deadline', { method: "POST" })
-    .then((res) => {res.text() })
-    .then((data) => {
-      alert(data);
+    fetch('/api/deadline', {
+      method: "post", 
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
     })
+      .then((res) => res.json())
+      .then((data) => {
+        alert(data.status);
+      })
   }
   const onClickBack = () => {
     navigator.ro

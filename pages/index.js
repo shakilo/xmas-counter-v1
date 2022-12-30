@@ -1,7 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react'
-var Snow = require('react-snow-effect');
-
-
+import React, { useState, useRef, useEffect } from 'react';
+import Snowfall from 'react-snowfall';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { fas, faStar } from '@fortawesome/free-solid-svg-icons'
+import { library } from '@fortawesome/fontawesome-svg-core';
+library.add(fas, faStar);
 const Home = () => {
 
   // We need ref in this, because we are dealing
@@ -9,53 +11,31 @@ const Home = () => {
   // stop it when needed
   const Ref = useRef(null);
 
+
   // The state for our timer
-  const [timer, setTimer] = useState('0d 00:00:00');
+  const [timer, setTimer] = useState('Happy New Year');
 
+  // const getTimeRemaining = (e) => {
+  //   const total = Date.parse(e) - Date.parse(new Date());
+  //   const days = Math.floor((total / 1000 / 60 / 60) / 24)
+  //   const seconds = Math.floor((total / 1000) % 60);
+  //   const minutes = Math.floor((total / 1000 / 60) % 60);
+  //   const hours = Math.floor((total / 1000 / 60 / 60) % 24);
+  //   return {
+  //     total, days, hours, minutes, seconds
+  //   };
+  // }
 
-  const getTimeRemaining = (e) => {
-    const total = Date.parse(e) - Date.parse(new Date());
-    const days = Math.floor((total / 1000 / 60 / 60) / 24)
-    const seconds = Math.floor((total / 1000) % 60);
-    const minutes = Math.floor((total / 1000 / 60) % 60);
-    const hours = Math.floor((total / 1000 / 60 / 60) % 24);
-    return {
-      total, days,  hours, minutes, seconds
-    };
-  }
+  const getStatus = () => {
 
-
-  const startTimer = (e) => {
-    let { total, days, hours, minutes, seconds }
-      = getTimeRemaining(e);
-    if (total >= 0) {
-
-      // update the timer
-      // check if less than 10 then we need to
-      // add '0' at the beginning of the variable
-      setTimer(
-        (days) + 'd ' +
-        (hours > 9 ? hours : '0' + hours) + ':' +
-        (minutes > 9 ? minutes : '0' + minutes) + ':'
-        + (seconds > 9 ? seconds : '0' + seconds)
-      )
-    }
-  }
-
-
-  const ClearAndStartTimer = (e) => {
-    
     fetch('/api/deadline')
-    .then((res) => res.json())
-    .then((data) => {
-      
-      const id = setInterval(() => {
-        startTimer(data.deadline);
-      }, 1000)
-      Ref.current = id;
-    })
-    
+      .then((res) => res.json())
+      .then((data) => {
+        setTimer(data.deadline);
+      })
+
   }
+
 
   // We can use useEffect so that when the component
   // mount the timer will start as soon as possible
@@ -63,26 +43,36 @@ const Home = () => {
   // We put empty array to act as componentDid
   // mount only
   useEffect(() => {
-    ClearAndStartTimer();
+    const id = setInterval(() => {
+      getStatus();
+    }, 1000)
+    Ref.current = id;
   }, []);
 
-  // Another way to call the clearTimer() to start
-  // the countdown is via action event from the
-  // button first we create function to be called
-  // by the button
-  const onClickReset = () => {
-    ClearAndStartTimer();
-    // clearTimer(getDeadTime());
-  }
 
   return (
-    <div className="App">
-      <Snow />
-      <h2>{timer}</h2>
-      <button onClick={onClickReset}>Sync</button>
+    <div className="App"
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100vh'
+      }} >
+      <h1 className='baby'>{timer}</h1>
+      <Snowfall color='#00bcd4' />
+      <div className="note">Shakilo <i className="faCoffee"/></div>
+      <div className="xmas-tree">
+        {/* <div className="star"><i className="fas fa-star"></i></div> */}
+        <div className='star'><FontAwesomeIcon icon="fas fa-star"/></div>
+        <div className="t1"></div>
+        <div className="t2"></div>
+        <div className="t3"></div>
+        <div className="stem"></div>
+        <div className="snow-ground"></div>
+      </div>
     </div>
   )
-  
+
 }
 
 export default Home;
