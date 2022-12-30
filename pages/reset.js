@@ -1,8 +1,6 @@
 import React from 'react'
 
-
 const reset = () => {
-
   // Another way to call the clearTimer() to start
   // the countdown is via action event from the
   // button first we create function to be called
@@ -17,7 +15,7 @@ const reset = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        alert(data.status);
+        
       })
   }
   const onClickBack = () => {

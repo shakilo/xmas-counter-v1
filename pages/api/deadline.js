@@ -8,55 +8,55 @@ var luckyPeople = [
   "Nyamsuren",
   "Ganaa",
   "Jabkhlan",
-  "Misheel",
-  "Minjee",
-  "Munkhoo",
   "Sharav",
   "Tungaa",
+  "Ariuka",
+  "Misheel",
   "Nomio",
-  "Puujee",
-  "Ariuka"
+  "Minjee",
+  "Munkhoo",
+  "Puujee"
 ]
+
+var randomGift = [];
 
 const getTimeRemaining = (e) => {
 
   const total = Date.parse(e) - Date.parse(new Date());
   const seconds = (total / 1000);
   if (total >= 0) {
-    return seconds;
+    randomGift = [...luckyPeople].sort(() => 0.5 - Math.random());
+    return {status:"timer", deadline: seconds };
   }
   if (isCounted) {
     //TODO randomize
-    shuffle(luckyPeople);
-    return luckyPeople;
+    return {status: "lucky", luckyPeople: randomGift};
   }
   deadline = "Happy New Year!";
-  return deadline;
+  return {deadline: deadline, status: "greeting"};
 
 }
 
 
 
 export default function handler(req, res) {
+  let responseData;
   if (req.method == "GET") {
-    deadline = getTimeRemaining(duedate);
-    res.status(200).json({ deadline: deadline, status: 'ok' });
-    return;
+    responseData = getTimeRemaining(duedate);
+    res.status(200).json(responseData);
+  }
+  if (req.method == "POST") {
+    duedate = new Date();
+    duedate.setSeconds(duedate.getSeconds() + 5 );
+    isCounted = true;
+    responseData = getTimeRemaining(duedate);
+    res.status(200).json(responseData);
   } 
-    if (req.method == "POST") {
-      duedate = new Date();
-      duedate.setSeconds(duedate.getSeconds() + 60);
-      isCounted = true;
-      deadline = getTimeRemaining(duedate);
-      console.log("time resetted: ", deadline);
-      res.status(200).json({ status: "Success", method: req.method, deadline: deadline });
-      return
-    } else {
-      isCounted = false;
-      res.status(200).json({
-        status: 'nok',
-        deadline: deadline
-      })
-    }
+  if (req.method == "PUT") {
+    res.status(200).json(luckyPeople);
+    responseData = luckyPeople;
+  }
+    console.log('Method: ', req.method, responseData);
+  
 
 }
